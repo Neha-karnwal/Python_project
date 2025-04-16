@@ -1,12 +1,10 @@
 # Python_project
-```markdown
-# 🧪 Data-Driven Insights on Mortality Trends in the U.S.
+# Data-Driven Insights on Mortality Trends in the U.S.
 
 A Python-based data analysis project exploring weekly death counts in the U.S., categorized by causes such as COVID-19, heart disease, cancer, and more. This project focuses on cleaning, transforming, and analyzing real-world mortality data to reveal meaningful patterns and trends using visual storytelling techniques.
 
----
 
-## 📊 Project Overview
+# Project Overview
 
 This analysis leverages publicly available datasets to understand mortality trends across the United States, focusing on:
 
