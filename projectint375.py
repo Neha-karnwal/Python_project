@@ -7,7 +7,6 @@ import seaborn as sns
 df = pd.read_excel("python dataset.xlsx")
 df.head()
 
-
 #data cleaning
 
 #handling missing values
