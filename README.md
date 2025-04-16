@@ -67,7 +67,7 @@ Big thanks to my mentors, peers, and the online data science community for their
 
 ---
 
-## 📌 How to Run
+# How to Run
 
 1. Clone the repository:
    ```bash
@@ -89,12 +89,12 @@ Big thanks to my mentors, peers, and the online data science community for their
 
 ---
 
-## 📬 Connect with Me
+# Connect with Me
 
 Feel free to reach out or connect with me on [LinkedIn](https://www.linkedin.com/) for feedback, collaboration, or just to say hi!
 
 ---
 
-## 📌 License
+# License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
