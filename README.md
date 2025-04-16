@@ -17,7 +17,7 @@ Through insightful visualizations and exploratory data analysis (EDA), the proje
 
 ---
 
-## 🔧 Technologies & Tools Used
+# Technologies & Tools Used
 
 - **Python**
 - **Pandas** – Data cleaning & manipulation  
@@ -27,14 +27,14 @@ Through insightful visualizations and exploratory data analysis (EDA), the proje
 
 ---
 
-## 📂 Dataset
+# Dataset
 
 The dataset used contains weekly provisional counts of deaths by select causes and jurisdiction in the U.S.  
-📁 **Source**: [CDC National Center for Health Statistics](https://data.cdc.gov/)
+**Source**: [CDC National Center for Health Statistics](https://data.cdc.gov/)
 
 ---
 
-## 📈 Key Visualizations
+# Key Visualizations
 
 - **Stacked Area Charts** – To compare death trends over time
 - **Heatmaps** – To analyze intensity by state and cause
@@ -43,7 +43,7 @@ The dataset used contains weekly provisional counts of deaths by select causes a
 
 ---
 
-## 💡 Insights & Findings
+# Insights & Findings
 
 - COVID-19 mortality spiked significantly during 2020–2021.
 - Heart disease remains a consistently leading cause of death.
@@ -52,7 +52,7 @@ The dataset used contains weekly provisional counts of deaths by select causes a
 
 ---
 
-## 🎯 What I Learned
+# What I Learned
 
 - Advanced data wrangling with Pandas
 - Effective visual storytelling techniques
@@ -61,7 +61,7 @@ The dataset used contains weekly provisional counts of deaths by select causes a
 
 ---
 
-## 🤝 Acknowledgments
+# Acknowledgments
 
 Big thanks to my mentors, peers, and the online data science community for their support and guidance throughout this project.
 
