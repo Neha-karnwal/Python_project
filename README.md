@@ -18,8 +18,6 @@ Through insightful visualizations and exploratory data analysis (EDA), the proje
 ---
 
 # Technologies & Tools Used
-
-- **Python**
 - **Pandas** – Data cleaning & manipulation  
 - **Matplotlib & Seaborn** – Data visualization  
 - **NumPy** – Numerical operations  
