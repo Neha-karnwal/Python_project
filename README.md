@@ -85,7 +85,7 @@ Big thanks to my mentors, peers, and the online data science community for their
    jupyter notebook
    ```
 
-4. Open and run `mortality_trends_analysis.ipynb`.
+4. Open and run using compiler`mortality_trends_analysis.ipynb`.
 
 ---
 
