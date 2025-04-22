@@ -8,7 +8,7 @@ A Python-based data analysis project exploring weekly death counts in the U.S., 
 
 This analysis leverages publicly available datasets to understand mortality trends across the United States, focusing on:
 
-- Cause-specific death rates (COVID-19, heart disease, cancer, etc.)
+- Cause specific death rates (COVID-19, heart disease, cancer, etc.)
 - State-wise impact and jurisdictional comparisons
 - Temporal trends from 2020 to 2021
 - Identification of vulnerable populations
