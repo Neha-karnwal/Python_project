@@ -67,7 +67,7 @@ Big thanks to my mentors, peers, and the online data science community for their
 
 ---
 
-# How to Run
+# How to Run this code 
 
 1. Clone the repository:
    ```bash
