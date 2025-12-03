@@ -1,142 +1,167 @@
+# ----------------------------
+# Mortality Trends Analysis Project
+# Data Analysis | EDA | Time-Series ML | Forecasting
+# ----------------------------
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_absolute_error, r2_score
+from statsmodels.tsa.seasonal import seasonal_decompose
+import warnings
+warnings.filterwarnings("ignore")
 
-#loading dataset
+# --------------------------------------------
+# 1. Load Dataset
+# --------------------------------------------
 df = pd.read_excel("python dataset.xlsx")
-df.head()
 
-#data cleaning
+# Standard column cleanup
+df.columns = df.columns.str.strip()
 
-#handling missing values
+print("Dataset Shape:", df.shape)
+print(df.head())
+
+# --------------------------------------------
+# 2. Data Cleaning
+# --------------------------------------------
+
+# Convert date column
+df["Week Ending Date"] = pd.to_datetime(df["Week Ending Date"])
+
+# Replace missing values
 df.fillna(0, inplace=True)
-plt.show()
 
-#convert dataTpyes
-df['Week Ending Date'] = pd.to_datetime(df['Week Ending Date'])
+# Keep only USA-level records (if needed)
+df = df[df["Jurisdiction of Occurrence"] == "United States"]
 
-#Exploratory Data Analysis (EDA)
-df.describe()
+# Sort by time
+df = df.sort_values("Week Ending Date")
 
-#Correlation Matrix
-plt.figure(figsize=(12, 8))
-sns.heatmap(df.corr(numeric_only=True), annot=True, cmap='coolwarm')
-plt.title("Correlation Matrix of Causes of Death")
-plt.show()
+# --------------------------------------------
+# 3. Feature Engineering
+# --------------------------------------------
 
-#Total Deaths Over Time
-df_grouped = df.groupby("Week Ending Date")[["All Cause", "Natural Cause"]].sum()
+df["year"] = df["Week Ending Date"].dt.year
+df["week"] = df["Week Ending Date"].dt.isocalendar().week
 
-df_grouped.plot(figsize=(12,6))
-plt.title("Trend of All-Cause and Natural Deaths Over Time")
+# Lag features for ML models
+df["AllCause_Lag1"] = df["All Cause"].shift(1)
+df["COVID_Lag1"] = df["COVID-19"].shift(1)
+
+# 4-week Rolling Averages
+df["AllCause_MA4"] = df["All Cause"].rolling(4).mean()
+df["COVID_MA4"] = df["COVID-19"].rolling(4).mean()
+
+# Drop initial NaNs from rolling windows
+df = df.dropna()
+
+# --------------------------------------------
+# 4. Exploratory Data Analysis
+# --------------------------------------------
+plt.figure(figsize=(12, 6))
+plt.plot(df["Week Ending Date"], df["All Cause"], label="All Cause Deaths")
+plt.plot(df["Week Ending Date"], df["Natural Cause"], label="Natural Deaths")
+plt.title("Mortality Trends Over Time")
 plt.xlabel("Date")
 plt.ylabel("Deaths")
+plt.legend()
 plt.grid(True)
 plt.show()
 
-# Visualizations with Seaborn & Matplotlib
-# COVID vs Heart Disease
-df_plot = df.groupby("Week Ending Date")[
-    ["COVID-19 (U071, Underlying Cause of Death)", "Diseases of heart (I00-I09,I11,I13,I20-I51)"]
-].sum()
-
-df_plot.plot(figsize=(12,6))
-plt.title("COVID-19 vs Heart Disease Deaths Over Time")
-plt.ylabel("Number of Deaths")
-plt.show()
-
-#Stacked Area Chart — Trend Comparison Over Time
-df_grouped = df.groupby("Week Ending Date")[
-    ['COVID-19 (U071, Underlying Cause of Death)', 
-     'Diseases of heart (I00-I09,I11,I13,I20-I51)', 
-     'Malignant neoplasms (C00-C97)']
-].sum()
-
-df_grouped.plot.area(figsize=(12, 6), colormap='Set2')
-plt.title("Stacked Area Chart of Major Causes of Death Over Time")
-plt.xlabel("Week Ending Date")
-plt.ylabel("Death Count")
-plt.show()
-
-#Heatmap — Weekly Trend of COVID-19 Deaths (Pivoted Table)
-heatmap_df = df.pivot_table(index='Jurisdiction of Occurrence', 
-                            columns='Week Ending Date', 
-                            values='COVID-19 (U071, Underlying Cause of Death)', 
-                            aggfunc='sum')
-
+# Correlation Matrix
 plt.figure(figsize=(14, 8))
-sns.heatmap(heatmap_df.fillna(0), cmap='YlOrRd')
-plt.title("Heatmap of COVID-19 Deaths per Jurisdiction Over Time")
+sns.heatmap(df.corr(numeric_only=True), annot=False, cmap="coolwarm")
+plt.title("Correlation Matrix of Mortality Features")
 plt.show()
 
-#Pie Chart — Proportion of Selected Causes of Death
-selected = df[[
-    'COVID-19 (U071, Underlying Cause of Death)', 
-    'Diseases of heart (I00-I09,I11,I13,I20-I51)', 
-    'Malignant neoplasms (C00-C97)', 
-    'Alzheimer disease (G30)'
-]].sum()
+# --------------------------------------------
+# 5. Time-Series Decomposition (Trend + Seasonality)
+# --------------------------------------------
 
-plt.figure(figsize=(7, 7))
-plt.pie(selected, labels=selected.index, autopct='%1.1f%%', startangle=90, colors=sns.color_palette("Set3"))
-plt.title("Proportion of Selected Causes of Death")
+ts = df.set_index("Week Ending Date")["All Cause"]
+result = seasonal_decompose(ts, model="additive", period=52)
+
+result.plot()
+plt.suptitle("Time-Series Decomposition: All-Cause Mortality", y=1.02)
 plt.show()
 
-#Line Plot — Comparing Weekly Trends of Diabetes & Alzheimer’s
-line_data = df.groupby("Week Ending Date")[
-    ["Diabetes mellitus (E10-E14)", "Alzheimer disease (G30)"]
-].sum()
+# --------------------------------------------
+# 6. ML Model → Predicting Mortality (Simple Regression)
+# --------------------------------------------
 
-line_data.plot(figsize=(12,6), color=["teal", "orchid"])
-plt.title("Weekly Deaths: Diabetes vs Alzheimer’s")
-plt.ylabel("Number of Deaths")
-plt.grid(True)
+features = ["AllCause_Lag1", "COVID_Lag1", "AllCause_MA4", "COVID_MA4"]
+X = df[features]
+y = df["All Cause"]
+
+# Train-test split
+split = int(len(df) * 0.8)
+X_train, X_test = X.iloc[:split], X.iloc[split:]
+y_train, y_test = y.iloc[:split], y.iloc[split:]
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Predictions
+pred = model.predict(X_test)
+
+print("MAE:", mean_absolute_error(y_test, pred))
+print("R2 Score:", r2_score(y_test, pred))
+
+# Plot predictions
+plt.figure(figsize=(12, 6))
+plt.plot(y_test.index, y_test, label="Actual")
+plt.plot(y_test.index, pred, label="Predicted")
+plt.title("All-Cause Mortality Prediction")
+plt.legend()
 plt.show()
 
-# Top 5 Causes of Death (Total)
-top_causes = df[[
-    'COVID-19 (U071, Underlying Cause of Death)',
-    'Diseases of heart (I00-I09,I11,I13,I20-I51)',
-    'Malignant neoplasms (C00-C97)',
-    'Diabetes mellitus (E10-E14)',
-    'Alzheimer disease (G30)'
-]].sum().sort_values(ascending=False)
+# --------------------------------------------
+# 7. Stacked Area Plot of Major Causes
+# --------------------------------------------
+major_causes = df.set_index("Week Ending Date")[[
+    "COVID-19",
+    "Diseases of heart",
+    "Malignant neoplasms",
+]]
 
-top_causes.plot(kind='barh', color='skyblue')
-plt.title("Top 5 Causes of Death (Total)")
-plt.xlabel("Total Deaths")
-plt.show()
-
-#Insight Extraction (EDA)
-#Use Pandas & summary plots to find:
-#Trends: Did COVID-19 deaths follow a wave pattern?
-#Region Analysis: Which jurisdictions were most affected?
-#Correlation: Are certain diseases correlated?
-top_states = df.groupby("Jurisdiction of Occurrence")["All Cause"].sum().sort_values(ascending=False).head(10)
-
-top_states.plot(kind='bar', color='coral')
-plt.title("Top 10 States by All-Cause Deaths")
+major_causes.plot.area(figsize=(12, 6), colormap="Set2")
+plt.title("Major Causes of Death — Trend Comparison")
+plt.xlabel("Date")
 plt.ylabel("Deaths")
 plt.show()
 
-#Conclusion
-#Wrap up with findings:
+# --------------------------------------------
+# 8. Heatmap by State (If multiple states exist)
+# --------------------------------------------
+heatmap_df = df.pivot_table(
+    index="Jurisdiction of Occurrence",
+    columns="Week Ending Date",
+    values="COVID-19",
+    aggfunc="sum"
+)
 
-#"COVID-19 had sharp spikes in 2020 and 2021"
+plt.figure(figsize=(16, 8))
+sns.heatmap(heatmap_df, cmap="YlOrRd")
+plt.title("COVID-19 Mortality Heatmap Across Jurisdictions")
+plt.show()
 
-#"Heart disease continues to be a major cause"
+# --------------------------------------------
+# 9. Insight Extraction
+# --------------------------------------------
+peak_covid_week = df.loc[df["COVID-19"].idxmax()]["Week Ending Date"]
+peak_allcause_week = df.loc[df["All Cause"].idxmax()]["Week Ending Date"]
 
-#"High mortality jurisdictions include X, Y, Z"
-print("COVID-19 had sharp spikes in 2020 and 2021")
-print("Heart disease continues to be a major cause")
-print("Top affected jurisdictions include: ", top_states.index.tolist())
+print("\n----- INSIGHTS -----")
+print(f"Highest COVID-19 deaths recorded during week: {peak_covid_week.date()}")
+print(f"Highest overall mortality recorded on: {peak_allcause_week.date()}")
 
+corr = df["COVID-19"].corr(df["All Cause"])
+print(f"Correlation between COVID-19 & All-Cause Mortality: {corr:.2f}")
 
-
-
-
-
-
-
-
+yearly_summary = df.groupby("year")["All Cause"].sum()
+print("\nYearly Mortality Totals:")
+print(yearly_summary)
