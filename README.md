@@ -1,100 +1,142 @@
-# Python_project
-# Data-Driven Insights on Mortality Trends in the U.S.
+Mortality Trends Analysis
+Advanced Data Analysis | EDA | Time-Series Modeling | Forecasting
 
-A Python-based data analysis project exploring weekly death counts in the U.S., categorized by causes such as COVID-19, heart disease, cancer, and more. This project focuses on cleaning, transforming, and analyzing real-world mortality data to reveal meaningful patterns and trends using visual storytelling techniques.
+This project analyzes weekly mortality data from the United States using advanced data-science techniques including exploratory data analysis (EDA), feature engineering, trend decomposition, and machine-learning-based forecasting.
 
+The goal is to identify major mortality patterns, understand cause-wise trends, and build predictive models to forecast all-cause mortality.
 
-# Project Overview
+ Project Highlights
 
-This analysis leverages publicly available datasets to understand mortality trends across the United States, focusing on:
+ Performed comprehensive EDA to understand mortality behavior
 
-- Cause-specific death rates (COVID-19, heart disease, cancer, etc.)
-- State-wise impact and jurisdictional comparisons
-- Temporal trends from 2020 to 2021
-- Identification of vulnerable populations
+ Built feature-engineered time-series dataset
 
-Through insightful visualizations and exploratory data analysis (EDA), the project delivers actionable insights into one of the most crucial public health topics.
+ Applied linear regression forecasting using lag & moving-average features
 
----
+ Conducted trend + seasonality decomposition
 
-# Technologies & Tools Used
+ Created heatmaps, time-series plots, and stacked area charts
 
-- **Python**
-- **Pandas** – Data cleaning & manipulation  
-- **Matplotlib & Seaborn** – Data visualization  
-- **NumPy** – Numerical operations  
-- **Jupyter Notebook** – Interactive analysis
+ Extracted meaningful insights such as peak mortality weeks and correlations
 
----
+ Dataset
 
-# Dataset
+Source: Weekly mortality records (Excel format) containing:
 
-The dataset used contains weekly provisional counts of deaths by select causes and jurisdiction in the U.S.  
-**Source**: [CDC National Center for Health Statistics](https://data.cdc.gov/)
+All-Cause deaths
 
----
+COVID-19 deaths
 
-# Key Visualizations
+Major causes (heart disease, cancer, etc.)
 
-- **Stacked Area Charts** – To compare death trends over time
-- **Heatmaps** – To analyze intensity by state and cause
-- **Pie Charts** – To show percentage distribution of deaths by cause
-- **Correlation Matrices** – To identify statistical relationships between variables
+Date of week ending
 
----
+Jurisdiction (state names)
 
-# Insights & Findings
+ Technologies Used
 
-- COVID-19 mortality spiked significantly during 2020–2021.
-- Heart disease remains a consistently leading cause of death.
-- Certain states were disproportionately affected across various causes.
-- Visualizations help highlight how public health crises evolve over time.
+Python 3
 
----
+Pandas, NumPy
 
-# What I Learned
+Matplotlib, Seaborn
 
-- Advanced data wrangling with Pandas
-- Effective visual storytelling techniques
-- Handling missing/incomplete data
-- Crafting insights from complex real-world datasets
+Statsmodels (seasonal decomposition)
 
----
+Scikit-learn (machine learning)
 
-# Acknowledgments
+ Project Workflow
+1. Import & Clean Data
 
-Big thanks to my mentors, peers, and the online data science community for their support and guidance throughout this project.
+Loaded Excel dataset
 
----
+Converted date fields
 
-# How to Run
+Filtered U.S-level aggregation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/mortality-trends-analysis.git
-   cd mortality-trends-analysis
-   ```
+Filled missing values
 
-2. Install required libraries:
-   ```bash
-   pip install -r requirements.txt
-   ```
+Sorted chronologically
 
-3. Launch the Jupyter Notebook:
-   ```bash
-   jupyter notebook
-   ```
+2. Feature Engineering
 
-4. Open and run `mortality_trends_analysis.ipynb`.
+Engineered several predictive & analytical features:
 
----
+Lag variables (1-week lag)
 
-# Connect with Me
+Moving Averages (4-week average)
 
-Feel free to reach out or connect with me on [LinkedIn](https://www.linkedin.com/) for feedback, collaboration, or just to say hi!
+Week number
 
----
+Year
 
-# License
+Rolling trend signals
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+3. Exploratory Data Analysis
+
+Includes:
+
+Time-series trend plots
+
+Correlation matrix
+
+Distribution of causes
+
+Stacked cause-wise area charts
+
+Jurisdiction heatmap
+
+4. Time-Series Trend Decomposition
+
+Using seasonal_decompose():
+
+Trend
+
+Seasonal patterns
+
+Residual noise
+
+5. Machine Learning Forecast
+
+Built a Linear Regression model using:
+
+AllCause_Lag1
+
+COVID_Lag1
+
+AllCause_MA4
+
+COVID_MA4
+
+Evaluated using MAE & R², with a prediction visualization.
+
+ 6. Results & Key Insights
+ Peak Mortality
+
+Highest COVID-19 mortality week identified
+
+Highest All-Cause mortality week identified
+
+ Correlation
+
+COVID-19 and All-Cause Mortality correlation example:
+
+Strong positive correlation → pandemic impact visible in overall mortality.
+
+ Year-wise mortality totals
+
+Helps track increase or decrease over years.
+
+Visualizations Included
+
+All-Cause vs Natural Deaths Trend
+
+Correlation Heatmap
+
+Time-Series Decomposition
+
+Prediction vs Actual Line Plot
+
+Stacked Area Chart for top causes
+
+Jurisdiction Heatmap 
